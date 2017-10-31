@@ -4,6 +4,7 @@ from ttk import Combobox
 from Equation import Equation
 from LinearProblem import LinearProblem
 from AnalyticSolver import AnalyticSolver
+from RandomSolver import RandomSolver
 import numpy as np
 
 class SolverWindow:
@@ -39,16 +40,19 @@ class SolverWindow:
 
         f_btns = Frame(master)
 
-        self.btn_add = Button(f_btns, text="Agregar variable", command=self.add_variable)
+        self.btn_add = Button(f_btns, text="Agregar\nvariable", command=self.add_variable)
         self.btn_add.pack(side=LEFT)
 
-        self.btn_add = Button(f_btns, text="Agregar condición", command=self.add_condition)
+        self.btn_add = Button(f_btns, text="Agregar\ncondición", command=self.add_condition)
         self.btn_add.pack(side=LEFT)
 
-        self.btn_add = Button(f_btns, text="Resolver", command=self.solve)
+        self.btn_add = Button(f_btns, text="Resolver\nAnalítico", command=self.solve_analytic)
         self.btn_add.pack(side=LEFT)
 
-        f_btns.pack(anchor = "e",pady=10)
+        self.btn_add = Button(f_btns, text="Resolver\nAleatorios", command=self.solve_random)
+        self.btn_add.pack(side=LEFT)
+
+        f_btns.pack(anchor = "e",pady=10,padx=10)
 
         self.lbl_ans = Label(master, justify=CENTER)
         self.lbl_ans.pack()
@@ -108,22 +112,32 @@ class SolverWindow:
         f_cond.value = v
         self.conds.append(f_cond)
 
-    def solve(self):
+    def getlinearproblem(self):
         coefs = [np.float(c.get()) for c in self.vars]
 
         z = Equation(coefs)
 
         conds = [Equation(
             [np.float(t.get()) for t in c.coefs],
-            c.type.current()+1,
+            c.type.current() + 1,
             np.float(c.value.get())
         ) for c in self.conds]
 
-        p = LinearProblem(z,conds,self.ptype.current())
+        p = LinearProblem(z, conds, self.ptype.current())
+        return p
+
+    def solve_analytic(self):
+        self.solve(AnalyticSolver)
+
+    def solve_random(self):
+        self.solve(RandomSolver)
+
+    def solve(self,solver):
+        p = self.getlinearproblem()
 
         ch = ord('A')
 
-        point,z = AnalyticSolver.solve(p)
+        point,z = solver.solve(p)
 
         txt = ""
 
