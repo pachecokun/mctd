@@ -31,7 +31,7 @@ class AnalyticSolver():
 
 
 #prueba
-
+"""
 problem = LinearProblem(
 	Equation([50,65]), #Funcion objetivo
 	[
@@ -47,3 +47,4 @@ problem = LinearProblem(
 
 print AnalyticSolver.solve(problem) #devuelve punto y valor
 
+"""

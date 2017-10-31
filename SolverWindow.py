@@ -1,10 +1,17 @@
 # coding=utf-8
 from Tkinter import *
+from ttk import Combobox
+from Equation import Equation
+from LinearProblem import LinearProblem
+from AnalyticSolver import AnalyticSolver
+import numpy as np
 
 class SolverWindow:
     def __init__(self, master):
         self.master = master
+        self.vars = []
         self.conds = []
+        self.l = None
 
         master.title("Problemas de Programación Lineal")
 
@@ -13,39 +20,12 @@ class SolverWindow:
 
         self.w_z = Frame(master)
 
+        self.ptype = Combobox(self.w_z,width=3)
+        self.ptype['values'] = ('Min','Max')
+        self.ptype.set('Max')
+        self.ptype.pack(side=LEFT)
+
         l = Label(self.w_z, text="z=")
-        l.pack(side=LEFT)
-
-        self.txt_zc = []
-
-        self.txt_zc.append(Entry(self.w_z,width=3,borderwidth=0,background=root["bg"],justify=RIGHT))
-        self.txt_zc[0].insert(0,"0")
-        self.txt_zc[0].pack(side=LEFT)
-        l = Label(self.w_z, text="A +")
-        l.pack(side=LEFT)
-
-        self.txt_zc.append(Entry(self.w_z,width=3,borderwidth=0,background=root["bg"],justify=RIGHT))
-        self.txt_zc[1].insert(0,"0")
-        self.txt_zc[1].pack(side=LEFT)
-        l = Label(self.w_z, text="B +")
-        l.pack(side=LEFT)
-
-        self.txt_zc.append(Entry(self.w_z,width=3,borderwidth=0,background=root["bg"],justify=RIGHT))
-        self.txt_zc[2].insert(0,"0")
-        self.txt_zc[2].pack(side=LEFT)
-        l = Label(self.w_z, text="C +")
-        l.pack(side=LEFT)
-
-        self.txt_zc.append(Entry(self.w_z,width=3,borderwidth=0,background=root["bg"],justify=RIGHT))
-        self.txt_zc[3].insert(0,"0")
-        self.txt_zc[3].pack(side=LEFT)
-        l = Label(self.w_z, text="D +")
-        l.pack(side=LEFT)
-
-        self.txt_zc.append(Entry(self.w_z,width=3,borderwidth=0,background=root["bg"],justify=RIGHT))
-        self.txt_zc[4].insert(0,"0")
-        self.txt_zc[4].pack(side=LEFT)
-        l = Label(self.w_z, text="E")
         l.pack(side=LEFT)
 
         self.w_z.pack(padx=10)
@@ -65,67 +45,98 @@ class SolverWindow:
         self.btn_add = Button(f_btns, text="Agregar condición", command=self.add_condition)
         self.btn_add.pack(side=LEFT)
 
-        self.btn_add = Button(f_btns, text="Resolver", command=self.greet)
+        self.btn_add = Button(f_btns, text="Resolver", command=self.solve)
         self.btn_add.pack(side=LEFT)
 
         f_btns.pack(anchor = "e",pady=10)
 
-    def add_variable(self):
-        self.txt_zc = []
+        self.lbl_ans = Label(master, justify=CENTER)
+        self.lbl_ans.pack()
 
-        self.txt_zc.append(Entry(self.w_z, width=3, borderwidth=0, background=root["bg"], justify=RIGHT))
-        self.txt_zc[0].insert(0, "0")
-        self.txt_zc[0].pack(side=LEFT)
-        l = Label(self.w_z, text="A +")
-        l.pack(side=LEFT)
+    def add_variable(self):
+
+        e = Entry(self.w_z, width=3, borderwidth=0, background=root["bg"], justify=RIGHT)
+
+        self.vars.append(e)
+
+        e.insert(0, "0")
+        e.pack(side=LEFT)
+
+        c = ord('A')+len(self.vars)-1
+
+        if self.l is not None:
+            self.l['text'] = str(chr(c-1))+" +"
+
+        self.l = Label(self.w_z, text=str(chr(c)))
+        self.l.pack(side=LEFT)
 
     def add_condition(self):
         f_cond = Frame(self.f_conds)
 
         coefs = []
 
-        coefs.append(Entry(f_cond, width=3,borderwidth=0,background=root["bg"],justify=RIGHT))
-        coefs[0].insert(0, "0")
-        coefs[0].pack(side=LEFT)
-        l = Label(f_cond, text="A +")
-        l.pack(side=LEFT)
+        ch = ord('A')
 
-        coefs.append(Entry(f_cond, width=3,borderwidth=0,background=root["bg"],justify=RIGHT))
-        coefs[1].insert(0, "0")
-        coefs[1].pack(side=LEFT)
-        l = Label(f_cond, text="B +")
-        l.pack(side=LEFT)
+        for i in range(len(self.vars)):
+            c = Entry(f_cond, width=3,borderwidth=0,background=root["bg"],justify=RIGHT)
+            c.insert(0, "0")
+            c.pack(side=LEFT)
 
-        coefs.append(Entry(f_cond, width=3,borderwidth=0,background=root["bg"],justify=RIGHT))
-        coefs[2].insert(0, "0")
-        coefs[2].pack(side=LEFT)
-        l = Label(f_cond, text="C +")
-        l.pack(side=LEFT)
+            coefs.append(c)
 
-        coefs.append(Entry(f_cond, width=3,borderwidth=0,background=root["bg"],justify=RIGHT))
-        coefs[3].insert(0, "0")
-        coefs[3].pack(side=LEFT)
-        l = Label(f_cond, text="D +")
-        l.pack(side=LEFT)
+            txt = str(chr(ch))
 
-        coefs.append(Entry(f_cond, width=3,borderwidth=0,background=root["bg"],justify=RIGHT))
-        coefs[4].insert(0, "0")
-        coefs[4].pack(side=LEFT)
-        l = Label(f_cond, text="E =")
-        l.pack(side=LEFT)
+            if i < len(self.vars)-1:
+                txt = txt+ " +"
+            l = Label(f_cond, text=txt)
+            ch = ch+1
+            l.pack(side=LEFT)
 
-        coefs.append(Entry(f_cond, width=3,borderwidth=0,background=root["bg"],justify=RIGHT))
-        coefs[5].insert(0, "0")
-        coefs[5].pack(side=LEFT)
+        type = Combobox(f_cond,width=3,justify=CENTER)
+        type['values'] = ('<','<=','=','>=','>')
+        type.set('<=')
+        type.pack(side=LEFT)
+
+        v = Entry(f_cond, width=3, borderwidth=0, background=root["bg"], justify=RIGHT)
+        v.insert(0, "0")
+        v.pack(side=LEFT)
 
         f_cond.pack()
 
-        f_cond.entries = coefs[:]
+        f_cond.coefs = coefs[:]
+        f_cond.type = type
+        f_cond.value = v
         self.conds.append(f_cond)
 
+    def solve(self):
+        coefs = [np.float(c.get()) for c in self.vars]
 
-    def greet(self):
-        print "lawl"
+        z = Equation(coefs)
+
+        conds = [Equation(
+            [np.float(t.get()) for t in c.coefs],
+            c.type.current()+1,
+            np.float(c.value.get())
+        ) for c in self.conds]
+
+        p = LinearProblem(z,conds,self.ptype.current())
+
+        ch = ord('A')
+
+        point,z = AnalyticSolver.solve(p)
+
+        txt = ""
+
+        for i in range(len(self.vars)):
+            txt = txt+str(point[i])+chr(ch+i)
+            if i<len(self.vars)-1:
+                txt = txt+" + "
+            else:
+                txt = txt+" = "
+        txt = txt+str(z)
+
+        self.lbl_ans['text'] = txt
+
 root = Tk()
 my_gui = SolverWindow(root)
 root.mainloop()

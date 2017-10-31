@@ -74,7 +74,7 @@ class Equation():
 		Convierte a cadena la ecuacion
 	"""
 	def __str__(self):
-		return str(self.coeficients)
+		return "--"+str(self.coeficients)+", "+str(self.ctype)+", "+str(self.limit)+"--"
 	__repr__ = __str__
 
 
