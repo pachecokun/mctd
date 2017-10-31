@@ -1,7 +1,5 @@
 from Equation import Equation
 from LinearProblem import LinearProblem
-from AnalyticSolver import AnalyticSolver
-from pprint import pprint
 import random
 import itertools
 
@@ -78,7 +76,7 @@ class RandomSolver():
 		return vFinal, zFinal
 
 #prueba
-
+"""
 problem = LinearProblem(
 	Equation([50,65]), #Funcion objetivo
 	[
@@ -94,4 +92,5 @@ problem = LinearProblem(
 
 print AnalyticSolver.solve(problem)
 print RandomSolver.solve(problem) #devuelve punto y valor
+"""
 
