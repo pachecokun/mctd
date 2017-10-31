@@ -76,5 +76,19 @@ class Equation():
 	def __str__(self):
 		return "--"+str(self.coeficients)+", "+str(self.ctype)+", "+str(self.limit)+"--"
 	__repr__ = __str__
+		
+	"""
+		Devuelve los limites de cada variable
+	"""
+	def getLimits(self):
+		limits = []
+
+		for var in self.coeficients:
+			if var == 0:
+				limits.append(0)
+			else:
+				limits.append(float(self.limit) / var)
+			
+		return limits
 
 
