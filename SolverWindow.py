@@ -46,13 +46,17 @@ class SolverWindow:
         self.btn_add = Button(f_btns, text="Agregar\ncondición", command=self.add_condition)
         self.btn_add.pack(side=LEFT)
 
+        f_btns.pack(anchor = "e",pady=10,padx=10)
+
+        f_btns = Frame(master)
+
         self.btn_add = Button(f_btns, text="Resolver\nAnalítico", command=self.solve_analytic)
         self.btn_add.pack(side=LEFT)
 
         self.btn_add = Button(f_btns, text="Resolver\nAleatorios", command=self.solve_random)
         self.btn_add.pack(side=LEFT)
 
-        f_btns.pack(anchor = "e",pady=10,padx=10)
+        f_btns.pack(anchor = "e",padx=10)
 
         self.lbl_ans = Label(master, justify=CENTER)
         self.lbl_ans.pack()
@@ -97,7 +101,7 @@ class SolverWindow:
             l.pack(side=LEFT)
 
         type = Combobox(f_cond,width=3,justify=CENTER)
-        type['values'] = ('<','<=','=','>=','>')
+        type['values'] = ('<=','=','>=')
         type.set('<=')
         type.pack(side=LEFT)
 
@@ -111,6 +115,8 @@ class SolverWindow:
         f_cond.type = type
         f_cond.value = v
         self.conds.append(f_cond)
+
+
 
     def getlinearproblem(self):
         coefs = [np.float(c.get()) for c in self.vars]
@@ -139,15 +145,21 @@ class SolverWindow:
 
         point,z = solver.solve(p)
 
-        txt = ""
+        if point:
 
-        for i in range(len(self.vars)):
-            txt = txt+str(point[i])+chr(ch+i)
-            if i<len(self.vars)-1:
-                txt = txt+" + "
-            else:
-                txt = txt+" = "
-        txt = txt+str(z)
+            txt = ""
+
+
+            for i in range(len(self.vars)):
+                txt = txt+("%.2f"%point[i])+chr(ch+i)
+                if i<len(self.vars)-1:
+                    txt = txt+" + "
+                else:
+                    txt = txt+" = "
+            txt = txt+("%.2f"%z)
+
+        else:
+            txt = "--No se ecncontró solución--"
 
         self.lbl_ans['text'] = txt
 

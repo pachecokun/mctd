@@ -3,11 +3,10 @@ import numpy as np
 class Equation():
 
 	#Constantes de tipo de ecuacion
-	LESS = 1
-	LESS_EQUAL = 2
-	EQUAL = 3
-	GREATER_EQUAL = 4
-	GREATER = 5
+
+	LESS_EQUAL = 1
+	EQUAL = 2
+	GREATER_EQUAL = 3
 
 	"""
 		Constructor
@@ -43,16 +42,12 @@ class Equation():
 
 		isValid = True
 
-		if self.ctype == self.LESS:
-			return val < self.limit
 		if self.ctype == self.LESS_EQUAL:
 			return val <= self.limit
 		if self.ctype == self.EQUAL:
 			return val == self.limit
 		if self.ctype == self.GREATER_EQUAL:
 			return val >= self.limit
-		if self.ctype == self.GREATER:
-			return val > self.limit
 
 	"""
 		Encuentra las intersectiones de varias ecuaciones

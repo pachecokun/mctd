@@ -19,7 +19,10 @@ class RandomSolver():
 		for i in range(0, lp.nvars):
 			possibleValues = []
 			for eq in lp.conditions:
-				possibleValues.append(eq.getLimits()[i])
+				if eq.ctype == Equation.LESS_EQUAL:
+					possibleValues.append(eq.getLimits()[i])
+				elif eq.ctype == Equation.GREATER_EQUAL:
+					possibleValues.append(100)
 			randLimits.append(max(possibleValues))
 		
 		pMax = None
@@ -28,6 +31,8 @@ class RandomSolver():
 		vMin = None
 		zFinal = None
 		vFinal = None
+		itMax = None
+		itMin = None
 		#inicia iteracion
 		for i in range (0, ITERATIONS):
 			vectors = []
@@ -52,20 +57,22 @@ class RandomSolver():
 			if iterationResults:
 				itMax = max(iterationResults)
 				itMin = min(iterationResults)				
-			
-			if pMax is None:
-				pMax = itMax
-				vMax = iterationValues[iterationResults.index(pMax)]
-			elif itMax > pMax:
-				pMax = itMax
-				vMax = iterationValues[iterationResults.index(pMax)]
-			if pMin is None:
-				pMin = itMin
-				vMin = iterationValues[iterationResults.index(pMin)]
-			elif itMin < pMin:
-				pMin = itMin
-				vMin = iterationValues[iterationResults.index(pMin)]
-				
+
+			if itMax:
+				if pMax is None:
+					pMax = itMax
+					vMax = iterationValues[iterationResults.index(pMax)]
+				elif itMax > pMax:
+					pMax = itMax
+					vMax = iterationValues[iterationResults.index(pMax)]
+			if itMin:
+				if pMin is None:
+					pMin = itMin
+					vMin = iterationValues[iterationResults.index(pMin)]
+				elif itMin < pMin:
+					pMin = itMin
+					vMin = iterationValues[iterationResults.index(pMin)]
+
 		if lp.ptype == LinearProblem.MIN:
 			zFinal = pMin
 			vFinal = vMin
