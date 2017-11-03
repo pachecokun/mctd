@@ -27,8 +27,6 @@ class RandomSolver():
 						maxVal = min(l,maxVal)
 					elif eq.ctype == Equation.GREATER_EQUAL:
 						minVal = max(l,minVal)
-					elif eq.ctype == Equation.EQUAL:
-						minVal = maxVal = l
 			randLimits.append((minVal,maxVal))
 		print randLimits
 		
@@ -45,11 +43,15 @@ class RandomSolver():
 			vectors = []
 			iterationValues = []
 			iterationResults = []
+			
+			
 			for j in range (0, VECTORS):
 				#inicializamos el vector con valores aleatorios
 				v = []
 				for k in range(0, lp.nvars):
 					v.append(randLimits[k][0]+random.random()*float(randLimits[k][1]-randLimits[k][0]))
+				
+				#print v
 				
 				#evaluamos que el valor cumpla las condiciones
 				valid = True
