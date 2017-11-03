@@ -80,7 +80,7 @@ class Equation():
 
 		for var in self.coeficients:
 			if var == 0:
-				limits.append(0)
+				limits.append(None)
 			else:
 				limits.append(float(self.limit) / var)
 			

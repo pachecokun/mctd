@@ -17,13 +17,20 @@ class RandomSolver():
 		#Encontrar valores limite de las variables
 		randLimits = []
 		for i in range(0, lp.nvars):
+			minVal = -100
+			maxVal = 100
 			possibleValues = []
 			for eq in lp.conditions:
-				if eq.ctype == Equation.LESS_EQUAL:
-					possibleValues.append(eq.getLimits()[i])
-				elif eq.ctype == Equation.GREATER_EQUAL:
-					possibleValues.append(100)
-			randLimits.append(max(possibleValues))
+				l = eq.getLimits()[i]
+				if l is not None:
+					if eq.ctype == Equation.LESS_EQUAL:
+						maxVal = min(l,maxVal)
+					elif eq.ctype == Equation.GREATER_EQUAL:
+						minVal = max(l,minVal)
+					elif eq.ctype == Equation.EQUAL:
+						minVal = maxVal = l
+			randLimits.append((minVal,maxVal))
+		print randLimits
 		
 		pMax = None
 		pMin = None
@@ -42,7 +49,7 @@ class RandomSolver():
 				#inicializamos el vector con valores aleatorios
 				v = []
 				for k in range(0, lp.nvars):
-					v.append(random.random()*float(randLimits[k]))
+					v.append(randLimits[k][0]+random.random()*float(randLimits[k][1]-randLimits[k][0]))
 				
 				#evaluamos que el valor cumpla las condiciones
 				valid = True
